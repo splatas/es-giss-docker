@@ -56,7 +56,7 @@ Una vez hayamos generado la imagen docker, es necesario crear un pod y desplegar
 Para esto, necesitamos instanciar el producto a través de un `template`. Para ello, ejecutamos el siguiente comando:
 
 ```bash
-    oc new-app -n single-signon-noprod --template=sso74-ocp4-x509-https \
+    oc new-app -n single-signon-noprod --template=sso75-ocp4-x509-https \
         --param=SSO_ADMIN_USERNAME=admin \
         --param=SSO_ADMIN_PASSWORD="redhat01"
 ```
@@ -84,6 +84,6 @@ spec:
             image-registry.openshift-image-registry.svc:5000/single-signon-noprod/rhsso-sgr:latest
 ```
 
-Tener en cuenta que el codigo YAML anterior sirve como referencia. Es decir, debe quedar configurado de esa manera. Originalmente por defecto viene configurado con las imagenes genericas y vacias estandar (`sso74-openshift-rhel8`). Debemos cambiar ese nombre por el nombre de la imagen que generamos anteriormente (`rhsso-sgr`).
+Tener en cuenta que el codigo YAML anterior sirve como referencia. Es decir, debe quedar configurado de esa manera. Originalmente por defecto viene configurado con las imagenes genericas y vacias estandar (`sso75-openshift-rhel8`). Debemos cambiar ese nombre por el nombre de la imagen que generamos anteriormente (`rhsso-sgr`).
 
 No olvidarse hacer clic en el boton **Save** para guardar los cambios una vez terminemos de remplazar los valores.
