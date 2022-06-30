@@ -37,25 +37,25 @@ done
 
 
 # 1. Creo proyecto
-oc new-project sso75-giss-integ
+oc new-project sso75-giss-test
 
 
 #2. **Configurar credenciales del repositorio Git**
-oc create secret -n sso75-giss-integ generic gitlab-basic-auth \
+oc create secret -n sso75-giss-test generic gitlab-basic-auth \
     --from-literal=username=splatas \
     --from-literal=password=glpat-ozhvqye3E6fwZDYVs1DM \
     --type=kubernetes.io/basic-auth
 
-oc annotate -n sso75-giss-integ secret/gitlab-basic-auth \
+oc annotate -n sso75-giss-test secret/gitlab-basic-auth \
     'build.openshift.io/source-secret-match-uri-1=https://gitlab.consulting.redhat.com/*'
 
 
 #3. **Generar Imagen Docker**
-oc -n sso75-giss-integ new-build https://gitlab.consulting.redhat.com/splatas/es-giss-docker.git  \
+oc -n sso75-giss-test new-build https://gitlab.consulting.redhat.com/splatas/es-giss-docker.git  \
     --name rhsso-integracion --context-dir=. -lapp=sso -lcustom=sgr
 
 
 #4. **Instanciar y/o Deployar Red Hat Single SignOn**
-oc new-app -n sso75-giss-integ --template=sso74-ocp4-x509-https \
+oc new-app -n sso75-giss-test --template=sso75-ocp4-x509-https \
         --param=SSO_ADMIN_USERNAME=admin \
         --param=SSO_ADMIN_PASSWORD="redhat01"
