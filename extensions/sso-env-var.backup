@@ -1,0 +1,5 @@
+Acceso a Oracle Desarrollo:
+usuario: USR_OCP_SSO
+clave: ocp_d2022
+host:192.168.20.31
+servicio: DESA

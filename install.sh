@@ -1,5 +1,23 @@
 #PRE-INSTALL
-#A. Importo los templates
+#A. Instalación de la DB, INSTRUCCIONES:
+#   https://github.com/oracle/docker-images/blob/main/OracleDatabase/SingleInstance/README.md
+# 
+# 1. Clonar ese repo en $CARPETA_ACTUAL
+#
+# 2. Descargar el binario de la versión a instalar: https://www.oracle.com/database/technologies/oracle-database-software-downloads.html
+#    Copiar el binario (.zip) en la carpeta correspondiente a la versioón, Ejemplo:
+#    LINUX.X64_193000_db_home.zip => $CARPETA_ACTUAL/oracle/docker-images/OracleDatabase/SingleInstance/dockerfiles/19.3.0  
+#
+# 3. Ejecutar el build: buildContainerImage.sh
+#    ./buildContainerImage.sh -e -v 19.3.0 -o '--build-arg SLIMMING=false'   
+#    
+#    script: $CARPETA_ACTUAL/oracle/docker-images/OracleDatabase/SingleInstance/dockerfiles/buildContainerImage.sh   
+
+
+
+
+
+#B. Importo los templates
 #https://raw.githubusercontent.com/jboss-container-images/redhat-sso-7-openshift-image/sso75-cpaas-dev/templates/sso75-ocp4-x509-https.json
 
 for resource in sso75-ocp4-x509-https.json \
@@ -14,8 +32,8 @@ do
 done
 
 # EL QUE IMPORTA!
-oc replace -n openshift --force -f \
- https://raw.githubusercontent.com/jboss-container-images/redhat-sso-7-openshift-image/sso75-cpaas-dev/templates/sso75-ocp4-x509-https.json
+# oc replace -n openshift --force -f \
+#  https://raw.githubusercontent.com/jboss-container-images/redhat-sso-7-openshift-image/sso75-cpaas-dev/templates/sso75-ocp4-x509-https.json
 
 
 # 1. Creo proyecto
