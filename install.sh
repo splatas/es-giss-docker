@@ -79,7 +79,7 @@ oc -n $NAMESPACE new-build https://gitlab.consulting.redhat.com/splatas/es-giss-
 echo ""
 echo "------------"
 echo " Despliego Red Hat Single SignOn" 
-#oc new-app -n $NAMESPACE --template=sso75-ocp4-x509-https --param=SSO_ADMIN_USERNAME=admin --param=SSO_ADMIN_PASSWORD="redhat01"
+oc new-app -n $NAMESPACE --template=sso75-ocp4-x509-https --param=SSO_ADMIN_USERNAME=admin --param=SSO_ADMIN_PASSWORD="redhat01"
 
 
 #PENDIENTES:
