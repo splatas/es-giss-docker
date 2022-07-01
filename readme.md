@@ -87,3 +87,18 @@ spec:
 Tener en cuenta que el codigo YAML anterior sirve como referencia. Es decir, debe quedar configurado de esa manera. Originalmente por defecto viene configurado con las imagenes genericas y vacias estandar (`sso75-openshift-rhel8`). Debemos cambiar ese nombre por el nombre de la imagen que generamos anteriormente (`rhsso-sgr`).
 
 No olvidarse hacer clic en el boton **Save** para guardar los cambios una vez terminemos de remplazar los valores.
+
+
+
+## Script de ejecución
+
+Se ha creado el script 'install.sh' el cual realiza los paso anteriores de manera automatizada.
+Se debe indicar en qué Namespace del cluster se desea realizar la instalación.
+Antes de ejecutarlo, revisar los parámetros definidos para verificar que sean correctos:
+1. CLUSTER: Cluster donde se va a realizar la instalación
+2. CLUSTER_TOKEN: Token de usuario con permisos de admin, para loguearse al cluster (https://CLUSTER/oauth/token/display)
+
+Ejecución:
+```bash
+    install.sh $NAMESPACE
+```

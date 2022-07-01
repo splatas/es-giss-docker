@@ -1,5 +1,8 @@
-#PRE-INSTALL
-#A. Instalación de la DB, INSTRUCCIONES:
+#!/bin/bash
+
+# PRE-INSTALL
+# -----------
+# A. Instalación de la DB, INSTRUCCIONES:
 #   https://github.com/oracle/docker-images/blob/main/OracleDatabase/SingleInstance/README.md
 # 
 # 1. Clonar ese repo en $CARPETA_ACTUAL
@@ -12,50 +15,75 @@
 #    ./buildContainerImage.sh -e -v 19.3.0 -o '--build-arg SLIMMING=false'   
 #    
 #    script: $CARPETA_ACTUAL/oracle/docker-images/OracleDatabase/SingleInstance/dockerfiles/buildContainerImage.sh   
+#
+# -----------
+
+export CLUSTER=https://api.cluster-xkpnb.xkpnb.sandbox1381.opentlc.com:6443
+export CLUSTER_TOKEN=sha256~nxG_t8492lj1flreBzjUsMaXpISMofJ2EP_FfFoYDXs
+export NAMESPACE=$1
+echo "##############################################"
+echo "Parámetros:"
+echo "  - Cluster: " $CLUSTER
+echo "  - Namespace: " $NAMESPACE
+
+echo "------------"
+echo "Me conecto al cluster: " $CLUSTER
+oc login --token=$CLUSTER_TOKEN --server=$CLUSTER
 
 
-
-
-
-#B. Importo los templates
-#https://raw.githubusercontent.com/jboss-container-images/redhat-sso-7-openshift-image/sso75-cpaas-dev/templates/sso75-ocp4-x509-https.json
-
-for resource in sso75-ocp4-x509-https.json \
-    sso75-image-stream.json \ 
-    sso75-https.json sso75-postgresql.json \
-    sso75-postgresql-persistent.json \ 
-    sso75-x509-https.json \
-    sso75-x509-postgresql-persistent.json
+# B. Importo los templates
+# https://raw.githubusercontent.com/jboss-container-images/redhat-sso-7-openshift-image/sso75-cpaas-dev/templates/sso75-ocp4-x509-https.json
+echo ""
+echo "------------"
+echo "Importo los templates "
+for resource in sso75-ocp4-x509-https.json sso75-image-stream.json sso75-https.json sso75-postgresql.json sso75-postgresql-persistent.json sso75-x509-https.json sso75-x509-postgresql-persistent.json
 do
  oc replace -n openshift --force -f \
  https://raw.githubusercontent.com/jboss-container-images/redhat-sso-7-openshift-image/sso75-cpaas-dev/templates/${resource}
 done
 
-# EL QUE IMPORTA!
+# EL TEMPLATE CLAVE ES:
 # oc replace -n openshift --force -f \
 #  https://raw.githubusercontent.com/jboss-container-images/redhat-sso-7-openshift-image/sso75-cpaas-dev/templates/sso75-ocp4-x509-https.json
 
 
 # 1. Creo proyecto
-oc new-project sso75-giss-test
+echo ""
+echo "------------"
+echo "Creo proyecto " $NAMESPACE
+oc new-project $NAMESPACE
 
 
 #2. **Configurar credenciales del repositorio Git**
-oc create secret -n sso75-giss-test generic gitlab-basic-auth \
+echo ""
+echo "------------"
+echo " Creo credenciales del repositorio Git" 
+oc create secret -n $NAMESPACE generic gitlab-basic-auth \
     --from-literal=username=splatas \
     --from-literal=password=glpat-ozhvqye3E6fwZDYVs1DM \
     --type=kubernetes.io/basic-auth
 
-oc annotate -n sso75-giss-test secret/gitlab-basic-auth \
+oc annotate -n $NAMESPACE secret/gitlab-basic-auth \
     'build.openshift.io/source-secret-match-uri-1=https://gitlab.consulting.redhat.com/*'
 
 
 #3. **Generar Imagen Docker**
-oc -n sso75-giss-test new-build https://gitlab.consulting.redhat.com/splatas/es-giss-docker.git  \
+echo ""
+echo "------------"
+echo " Creo Imagen Docker" 
+oc -n $NAMESPACE new-build https://gitlab.consulting.redhat.com/splatas/es-giss-docker.git  \
     --name rhsso-integracion --context-dir=. -lapp=sso -lcustom=sgr
 
 
 #4. **Instanciar y/o Deployar Red Hat Single SignOn**
-oc new-app -n sso75-giss-test --template=sso75-ocp4-x509-https \
+echo ""
+echo "------------"
+echo " Despliego Red Hat Single SignOn" 
+oc new-app -n $NAMESPACE --template=sso75-ocp4-x509-https \
         --param=SSO_ADMIN_USERNAME=admin \
         --param=SSO_ADMIN_PASSWORD="redhat01"
+
+echo ""
+echo "################################################################"
+echo " Finalizó el proces de instalación! Namespace: '" $NAMESPACE  "'"
+echo "################################################################"
