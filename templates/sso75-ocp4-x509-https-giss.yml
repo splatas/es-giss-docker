@@ -195,7 +195,7 @@ objects:
         - ${APPLICATION_NAME}
         from:
           kind: ImageStreamTag
-          name: sso75-openshift-rhel8:7.5
+          name: ${CUSTOM_IMAGE}:latest
           namespace: ${IMAGE_STREAM_NAMESPACE}
       type: ImageChange
     - type: ConfigChange
@@ -257,3 +257,7 @@ parameters:
   displayName: Container Memory Limit
   name: MEMORY_LIMIT
   value: 1Gi
+- description: Custom image.
+  displayName: Custom image.
+  name: CUSTOM_IMAGE
+  value: rhsso
