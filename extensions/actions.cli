@@ -13,7 +13,7 @@ set FILE=/opt/eap/extensions/ojdbc8-12.2.0.1.0.jar
 module add --name=$DB_EAP_MODULE --resources=$FILE --dependencies=javax.api,javax.resource.api
 /subsystem=datasources/jdbc-driver=$DB_DRIVER_NAME:add( \
     driver-name=$DB_DRIVER_NAME, \
-    driver-module-name=$DB_EAP_MODULE, \
+    driver-module-name=$DB_EAP_MODULE \
 )
 /subsystem=datasources/data-source=KeycloakDS:remove()
 /subsystem=datasources/data-source=KeycloakDS:add( \
