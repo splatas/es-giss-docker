@@ -20,6 +20,7 @@
 
 export CLUSTER=https://api.cluster-xkpnb.xkpnb.sandbox1381.opentlc.com:6443
 export CLUSTER_TOKEN=sha256~nxG_t8492lj1flreBzjUsMaXpISMofJ2EP_FfFoYDXs
+export IMAGE_OUTPUT=rhsso
 export NAMESPACE=$1
 echo "##############################################"
 echo "Parámetros:"
@@ -71,19 +72,33 @@ oc annotate -n $NAMESPACE secret/gitlab-basic-auth \
 echo ""
 echo "------------"
 echo " Creo Imagen Docker" 
-oc -n $NAMESPACE new-build https://gitlab.consulting.redhat.com/splatas/es-giss-docker.git  \
-    --name rhsso-integracion --context-dir=. -lapp=sso -lcustom=sgr
+oc -n $NAMESPACE new-build https://gitlab.consulting.redhat.com/splatas/es-giss-docker.git --name $IMAGE_OUTPUT --context-dir=. -lapp=sso -lcustom=sgr
 
 
 #4. **Instanciar y/o Deployar Red Hat Single SignOn**
 echo ""
 echo "------------"
 echo " Despliego Red Hat Single SignOn" 
-oc new-app -n $NAMESPACE --template=sso75-ocp4-x509-https \
-        --param=SSO_ADMIN_USERNAME=admin \
-        --param=SSO_ADMIN_PASSWORD="redhat01"
+#oc new-app -n $NAMESPACE --template=sso75-ocp4-x509-https --param=SSO_ADMIN_USERNAME=admin --param=SSO_ADMIN_PASSWORD="redhat01"
+
+
+#PENDIENTES:
+#    1.ACTUALIZAR EL DC
+#    - type: ImageChange
+#      imageChangeParams:
+#        automatic: true
+#        containerNames:
+#          - sso
+#        from:
+#          kind: ImageStreamTag
+#          namespace: openshift
+#          name: '$IMAGE_OUTPUT:latest'
+#    - type: ConfigChange
+#
+#
+#    2. TAGUEAR LA VERSION PARA NO USAR 'LATEST': release-1.0.0
 
 echo ""
-echo "################################################################"
-echo " Finalizó el proces de instalación! Namespace: '" $NAMESPACE  "'"
-echo "################################################################"
+echo "######################################################################"
+echo " Finalizó el proces de instalación! Namespace: '"$NAMESPACE"'"
+echo "######################################################################"
