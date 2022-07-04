@@ -1,0 +1,47 @@
+1) Excute:
+
+oc login --token=sha256~LSEnHSUgXxwuzuvaDidohIeKq5PANRZvjQghp7VHxcQ --server=https://api.cluster-425nd.425nd.sandbox590.opentlc.com:6443
+set SSO_PROJECT=rh-sso 
+oc new-project $SSO_PROJECT
+
+2) Download all files from git to local:
+
+git clone https://gitlab.consulting.redhat.com/splatas/es-giss-docker.git
+
+3) Pararse en la carpeta crear y ejecutar el build:
+
+cd /repo_git
+
+oc new-build --name rhsso --binary --strategy docker
+
+oc start-build rhsso --from-dir . --follow
+
+4) Importar el template de RHSSO 7.5
+
+curl wget https://raw.githubusercontent.com/jboss-container-images/redhat-sso-7-openshift-image/sso76-dev/templates/sso75-ocp4-x509-https.json
+
+oc create -f sso75-ocp4-x509-https.json
+
+5) Crear un SSO generico para poder pisar la imagen
+
+oc new-app -n $SSO_PROJECT --template=sso75-ocp4-x509-https \
+        --param=SSO_ADMIN_USERNAME=admin \
+        --param=SSO_ADMIN_PASSWORD="redhat01"
+
+oc set image dc/sso mycontainer=rhsso:latest
+
+5) Hacer un override del deployment para agreagar la imagen nueva
+
+
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - sso
+        from:
+          kind: ImageStreamTag
+          namespace: openshift
+          name: 'rhsso:latest'
+        lastTriggeredImage: >-
+       image-registry.openshift-image-registry.svc:5000/rh-sso/rhsso@sha256:3bd57de93a781e1633919dc26e189a665ca28dad20912136851df3fd0f87f156
+    - type: ConfigChange
