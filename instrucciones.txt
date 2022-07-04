@@ -28,7 +28,7 @@ oc new-app -n $SSO_PROJECT --template=sso75-ocp4-x509-https \
         --param=SSO_ADMIN_USERNAME=admin \
         --param=SSO_ADMIN_PASSWORD="redhat01"
 
-oc set image dc/sso mycontainer=rhsso:latest
+#oc set image dc/sso mycontainer=rhsso:latest
 
 5) Hacer un override del deployment para agreagar la imagen nueva
 
