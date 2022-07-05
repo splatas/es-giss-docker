@@ -2,6 +2,11 @@
 
 Este extracto cubre el proceso de instalación del producto **Red Hat Single SignOn 7.4** y sus configuraciones necesarias.
 
+## Detalle de Instalación en GISS
+
+IMPORTANTE: En GISS se hecho la instalación siguiendo los pasos detallados en 'instrucciones.txt'
+
+
 ## Instalacion
 
 1. **Crear el proyecto:**
